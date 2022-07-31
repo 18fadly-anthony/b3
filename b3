@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Copyright (c) 2022 Anthony Fadly (anthony@technologists.cloud)
+# This program is licensed under the MIT License
+# You are free to copy, modify, and redistribute the code.
+# See LICENSE file.
+
 if [ $# -eq 0 ]
 then
     # If no arguments, use current directory as source
