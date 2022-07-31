@@ -1,0 +1,38 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]
+then
+    # If no arguments, use current directory as source
+    # Use readlink to make sure it's an absolute path
+    SOURCE=$(readlink -f "$(pwd)")
+else
+    # Else use arg 1 as source
+    SOURCE=$(readlink -f "$1")
+fi
+
+# Exit if source does not exist by testing if it's a file or directory
+[ ! -f "$SOURCE" ] && [ ! -d "$SOURCE" ] && echo "$SOURCE does not exist" && exit
+
+BASENAME=$(basename "$SOURCE")
+
+# Basically back up to ~/b3/<basename>-<hash>/<datetime>.tar.gz
+# Use hash of full source path in case multiple sources have same basename
+TARDIR=$HOME/b3/$BASENAME-$(echo "$SOURCE" | sha1sum | cut -c -7)
+TARGET=$TARDIR/$(date -Iseconds).tar.gz
+
+mkdir -p "$TARDIR"
+
+# Suppress output from tar so it doesn't complain about absolute paths
+# alternatively using tar --absolute-names would fix this but that makes
+# tarballs with absolute directories in them
+echo "Creating tarball..."
+OUTPUT=$(tar -czf "$TARGET" "$SOURCE" 2>&1)
+
+if [ -f "$TARGET" ]
+then
+    echo "Backed up to $TARGET"
+else
+    echo "Backup failed with:"
+    # If backup fails, show the output from tar
+    echo "$OUTPUT"
+fi
