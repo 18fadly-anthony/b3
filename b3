@@ -16,7 +16,7 @@ else
 fi
 
 # Exit if source does not exist by testing if it's a file or directory
-[ ! -f "$SOURCE" ] && [ ! -d "$SOURCE" ] && echo "$SOURCE does not exist" && exit
+[ ! -f "$SOURCE" ] && [ ! -d "$SOURCE" ] && echo "$SOURCE does not exist" && exit 1
 
 BASENAME=$(basename "$SOURCE")
 
@@ -40,4 +40,5 @@ else
     echo "Backup failed with:"
     # If backup fails, show the output from tar
     echo "$OUTPUT"
+    exit 1
 fi
